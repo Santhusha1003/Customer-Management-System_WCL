@@ -21,6 +21,20 @@
             color: #263238;
         }
 
+        a,
+        button,
+        .form-control,
+        .form-select {
+            transition: all .18s ease-in-out;
+        }
+
+        a:focus-visible,
+        button:focus-visible,
+        .form-control:focus,
+        .form-select:focus {
+            box-shadow: 0 0 0 .25rem rgba(13, 110, 253, .18);
+        }
+
         .navbar {
             min-height: 64px;
         }
@@ -71,21 +85,78 @@
             min-width: 0;
         }
 
-        .stat-card {
-            border: 0;
-            border-radius: 8px;
-            box-shadow: 0 8px 24px rgba(15, 23, 42, .06);
+        .card {
+            border-radius: 12px;
         }
 
-        .stat-icon {
-            width: 44px;
-            height: 44px;
+        .shadow-soft {
+            box-shadow: 0 12px 30px rgba(15, 23, 42, .08);
+        }
+
+        .btn:hover {
+            transform: translateY(-1px);
+        }
+
+        .table {
+            --bs-table-hover-bg: rgba(13, 110, 253, .045);
+        }
+
+        .table th {
+            color: #52616f;
+            font-size: .78rem;
+            letter-spacing: .04em;
+            text-transform: uppercase;
+        }
+
+        .empty-state-icon {
+            width: 72px;
+            height: 72px;
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            border-radius: 8px;
+            border-radius: 50%;
             background-color: rgba(13, 110, 253, .1);
             color: var(--cms-primary);
+            font-size: 2rem;
+        }
+
+        .stat-card {
+            border: 0;
+            border-radius: 12px;
+            box-shadow: 0 12px 30px rgba(15, 23, 42, .08);
+        }
+
+        .stat-icon {
+            width: 52px;
+            height: 52px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            flex: 0 0 52px;
+            border-radius: 12px;
+            background-color: rgba(13, 110, 253, .1);
+            color: var(--cms-primary);
+            font-size: 1.35rem;
+        }
+
+        .stat-icon-primary {
+            background-color: rgba(13, 110, 253, .12);
+            color: #0d6efd;
+        }
+
+        .stat-icon-success {
+            background-color: rgba(25, 135, 84, .12);
+            color: #198754;
+        }
+
+        .stat-icon-secondary {
+            background-color: rgba(108, 117, 125, .14);
+            color: #6c757d;
+        }
+
+        .stat-icon-info {
+            background-color: rgba(13, 202, 240, .15);
+            color: #087990;
         }
 
         .avatar-placeholder {
@@ -141,17 +212,17 @@
                 <div class="text-uppercase text-muted small fw-semibold px-2 mb-2">Navigation</div>
 
                 <nav class="d-grid gap-1">
-                    <a href="#" class="sidebar-link {{ request()->routeIs('dashboard') ? 'active' : '' }}">
+                    <a href="{{ route('dashboard') }}" class="sidebar-link {{ request()->routeIs('dashboard') ? 'active' : '' }}">
                         <i class="bi bi-speedometer2"></i>
                         <span>Dashboard</span>
                     </a>
 
-                    <a href="#" class="sidebar-link {{ request()->routeIs('customers.index') ? 'active' : '' }}">
+                    <a href="{{ route('customers.index') }}" class="sidebar-link {{ request()->routeIs('customers.index') ? 'active' : '' }}">
                         <i class="bi bi-people"></i>
                         <span>Customers</span>
                     </a>
 
-                    <a href="#" class="sidebar-link {{ request()->routeIs('customers.create') ? 'active' : '' }}">
+                    <a href="{{ route('customers.create') }}" class="sidebar-link {{ request()->routeIs('customers.create') ? 'active' : '' }}">
                         <i class="bi bi-person-plus"></i>
                         <span>Add Customer</span>
                     </a>
@@ -169,17 +240,17 @@
                     <div class="text-uppercase text-muted small fw-semibold px-2 mb-2">Navigation</div>
 
                     <nav class="d-grid gap-1">
-                        <a href="#" class="sidebar-link {{ request()->routeIs('dashboard') ? 'active' : '' }}">
+                        <a href="{{ route('dashboard') }}" class="sidebar-link {{ request()->routeIs('dashboard') ? 'active' : '' }}">
                             <i class="bi bi-speedometer2"></i>
                             <span>Dashboard</span>
                         </a>
 
-                        <a href="#" class="sidebar-link {{ request()->routeIs('customers.index') ? 'active' : '' }}">
+                        <a href="{{ route('customers.index') }}" class="sidebar-link {{ request()->routeIs('customers.index') ? 'active' : '' }}">
                             <i class="bi bi-people"></i>
                             <span>Customers</span>
                         </a>
 
-                        <a href="#" class="sidebar-link {{ request()->routeIs('customers.create') ? 'active' : '' }}">
+                        <a href="{{ route('customers.create') }}" class="sidebar-link {{ request()->routeIs('customers.create') ? 'active' : '' }}">
                             <i class="bi bi-person-plus"></i>
                             <span>Add Customer</span>
                         </a>
@@ -190,6 +261,16 @@
 
         <main class="content-wrapper flex-grow-1">
             <div class="container-fluid p-3 p-lg-4">
+                @foreach (['success' => 'check-circle', 'error' => 'exclamation-octagon', 'warning' => 'exclamation-triangle'] as $type => $icon)
+                    @if (session($type))
+                        <div class="alert alert-{{ $type === 'error' ? 'danger' : $type }} alert-dismissible fade show shadow-sm" role="alert">
+                            <i class="bi bi-{{ $icon }} me-2"></i>
+                            {{ session($type) }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close alert"></button>
+                        </div>
+                    @endif
+                @endforeach
+
                 @yield('content')
             </div>
         </main>
@@ -202,5 +283,20 @@
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.querySelectorAll('form[data-disable-on-submit="true"]').forEach((form) => {
+            form.addEventListener('submit', () => {
+                const button = form.querySelector('[data-loading-text]');
+
+                if (!button) {
+                    return;
+                }
+
+                button.disabled = true;
+                button.dataset.originalText = button.innerHTML;
+                button.innerHTML = button.dataset.loadingText;
+            });
+        });
+    </script>
 </body>
 </html>

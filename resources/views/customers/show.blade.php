@@ -23,7 +23,7 @@
 
     <div class="row g-4">
         <div class="col-12 col-xl-4">
-            <div class="card border-0 shadow-sm rounded-3 h-100">
+            <div class="card border-0 shadow-soft rounded-3 h-100">
                 <div class="card-body p-4">
                     <div class="d-flex align-items-center gap-3 mb-4">
                         <div class="avatar-placeholder">
@@ -58,7 +58,7 @@
         </div>
 
         <div class="col-12 col-xl-8">
-            <div class="card border-0 shadow-sm rounded-3">
+            <div class="card border-0 shadow-soft rounded-3">
                 <div class="card-body p-4 p-lg-5">
                     <h2 class="h5 fw-bold mb-4">Profile Information</h2>
 

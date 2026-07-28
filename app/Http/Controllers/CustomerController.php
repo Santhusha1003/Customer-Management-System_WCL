@@ -8,11 +8,33 @@ use Illuminate\Http\Request;
 class CustomerController extends Controller
 {
     /**
+     * Display the dashboard statistics.
+     */
+    public function dashboard()
+    {
+        $totalCustomers = Customer::count();
+        $activeCustomers = Customer::where('status', 'Active')->count();
+        $inactiveCustomers = Customer::where('status', 'Inactive')->count();
+        $customersAddedThisMonth = Customer::whereMonth('created_at', now()->month)
+            ->whereYear('created_at', now()->year)
+            ->count();
+
+        return view('dashboard', compact(
+            'totalCustomers',
+            'activeCustomers',
+            'inactiveCustomers',
+            'customersAddedThisMonth'
+        ));
+    }
+
+    /**
      * Display a listing of the resource.
      */
     public function index(Request $request)
     {
         $search = $request->input('search');
+        $status = $request->input('status', 'All');
+        $status = in_array($status, ['Active', 'Inactive'], true) ? $status : 'All';
 
         $customers = Customer::query()
             ->when($search, function ($query, $search) {
@@ -23,11 +45,14 @@ class CustomerController extends Controller
                         ->orWhere('phone', 'like', "%{$search}%");
                 });
             })
+            ->when($status !== 'All', function ($query) use ($status) {
+                $query->where('status', $status);
+            })
             ->latest()
             ->paginate(10)
             ->withQueryString();
 
-        return view('customers.index', compact('customers', 'search'));
+        return view('customers.index', compact('customers', 'search', 'status'));
     }
 
     /**

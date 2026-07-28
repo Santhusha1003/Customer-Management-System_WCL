@@ -15,10 +15,11 @@
             <div class="card stat-card h-100">
                 <div class="card-body d-flex align-items-center justify-content-between gap-3">
                     <div>
-                        <p class="text-muted mb-1">Total Customers</p>
-                        <h2 class="fw-bold mb-0">0</h2>
+                        <p class="text-muted small fw-semibold text-uppercase mb-1">Total Customers</p>
+                        <h2 class="display-6 fw-bold mb-1">{{ $totalCustomers }}</h2>
+                        <p class="text-muted small mb-0">All registered customers</p>
                     </div>
-                    <span class="stat-icon">
+                    <span class="stat-icon stat-icon-primary">
                         <i class="bi bi-people"></i>
                     </span>
                 </div>
@@ -29,10 +30,11 @@
             <div class="card stat-card h-100">
                 <div class="card-body d-flex align-items-center justify-content-between gap-3">
                     <div>
-                        <p class="text-muted mb-1">Active Customers</p>
-                        <h2 class="fw-bold mb-0">0</h2>
+                        <p class="text-muted small fw-semibold text-uppercase mb-1">Active Customers</p>
+                        <h2 class="display-6 fw-bold mb-1">{{ $activeCustomers }}</h2>
+                        <p class="text-muted small mb-0">Currently active customers</p>
                     </div>
-                    <span class="stat-icon">
+                    <span class="stat-icon stat-icon-success">
                         <i class="bi bi-person-check"></i>
                     </span>
                 </div>
@@ -43,10 +45,11 @@
             <div class="card stat-card h-100">
                 <div class="card-body d-flex align-items-center justify-content-between gap-3">
                     <div>
-                        <p class="text-muted mb-1">Inactive Customers</p>
-                        <h2 class="fw-bold mb-0">0</h2>
+                        <p class="text-muted small fw-semibold text-uppercase mb-1">Inactive Customers</p>
+                        <h2 class="display-6 fw-bold mb-1">{{ $inactiveCustomers }}</h2>
+                        <p class="text-muted small mb-0">Currently inactive customers</p>
                     </div>
-                    <span class="stat-icon">
+                    <span class="stat-icon stat-icon-secondary">
                         <i class="bi bi-person-dash"></i>
                     </span>
                 </div>
@@ -57,10 +60,11 @@
             <div class="card stat-card h-100">
                 <div class="card-body d-flex align-items-center justify-content-between gap-3">
                     <div>
-                        <p class="text-muted mb-1">Recently Added</p>
-                        <h2 class="fw-bold mb-0">0</h2>
+                        <p class="text-muted small fw-semibold text-uppercase mb-1">New This Month</p>
+                        <h2 class="display-6 fw-bold mb-1">{{ $customersAddedThisMonth }}</h2>
+                        <p class="text-muted small mb-0">Customers added this month</p>
                     </div>
-                    <span class="stat-icon">
+                    <span class="stat-icon stat-icon-info">
                         <i class="bi bi-clock-history"></i>
                     </span>
                 </div>

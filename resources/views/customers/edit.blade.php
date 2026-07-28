@@ -8,15 +8,15 @@
         <p class="text-muted mb-0">Update an existing customer profile.</p>
     </div>
 
-    <div class="card border-0 shadow-sm rounded-3">
+    <div class="card border-0 shadow-soft rounded-3">
         <div class="card-body p-4 p-lg-5">
-            <form action="{{ route('customers.update', $customer->id) }}" method="POST">
+            <form action="{{ route('customers.update', $customer->id) }}" method="POST" data-disable-on-submit="true">
                 @csrf
                 @method('PUT')
 
                 <div class="row g-4">
                     <div class="col-12 col-md-6">
-                        <label for="firstName" class="form-label fw-semibold">First Name</label>
+                        <label for="firstName" class="form-label fw-semibold">First Name <span class="text-danger">*</span></label>
                         <div class="input-group">
                             <span class="input-group-text bg-white">
                                 <i class="bi bi-person"></i>
@@ -28,15 +28,17 @@
                                 name="first_name"
                                 value="{{ old('first_name', $customer->first_name) }}"
                                 placeholder="Enter first name"
+                                aria-describedby="firstNameError"
+                                required
                             >
                         </div>
                         @error('first_name')
-                            <div class="text-danger small mt-1">{{ $message }}</div>
+                            <div class="invalid-feedback d-block" id="firstNameError">{{ $message }}</div>
                         @enderror
                     </div>
 
                     <div class="col-12 col-md-6">
-                        <label for="lastName" class="form-label fw-semibold">Last Name</label>
+                        <label for="lastName" class="form-label fw-semibold">Last Name <span class="text-danger">*</span></label>
                         <div class="input-group">
                             <span class="input-group-text bg-white">
                                 <i class="bi bi-person"></i>
@@ -48,15 +50,17 @@
                                 name="last_name"
                                 value="{{ old('last_name', $customer->last_name) }}"
                                 placeholder="Enter last name"
+                                aria-describedby="lastNameError"
+                                required
                             >
                         </div>
                         @error('last_name')
-                            <div class="text-danger small mt-1">{{ $message }}</div>
+                            <div class="invalid-feedback d-block" id="lastNameError">{{ $message }}</div>
                         @enderror
                     </div>
 
                     <div class="col-12 col-md-6">
-                        <label for="email" class="form-label fw-semibold">Email</label>
+                        <label for="email" class="form-label fw-semibold">Email <span class="text-danger">*</span></label>
                         <div class="input-group">
                             <span class="input-group-text bg-white">
                                 <i class="bi bi-envelope"></i>
@@ -68,15 +72,17 @@
                                 name="email"
                                 value="{{ old('email', $customer->email) }}"
                                 placeholder="customer@example.com"
+                                aria-describedby="emailError"
+                                required
                             >
                         </div>
                         @error('email')
-                            <div class="text-danger small mt-1">{{ $message }}</div>
+                            <div class="invalid-feedback d-block" id="emailError">{{ $message }}</div>
                         @enderror
                     </div>
 
                     <div class="col-12 col-md-6">
-                        <label for="phoneNumber" class="form-label fw-semibold">Phone Number</label>
+                        <label for="phoneNumber" class="form-label fw-semibold">Phone Number <span class="text-danger">*</span></label>
                         <div class="input-group">
                             <span class="input-group-text bg-white">
                                 <i class="bi bi-telephone"></i>
@@ -88,26 +94,28 @@
                                 name="phone"
                                 value="{{ old('phone', $customer->phone) }}"
                                 placeholder="Enter phone number"
+                                aria-describedby="phoneError"
+                                required
                             >
                         </div>
                         @error('phone')
-                            <div class="text-danger small mt-1">{{ $message }}</div>
+                            <div class="invalid-feedback d-block" id="phoneError">{{ $message }}</div>
                         @enderror
                     </div>
 
                     <div class="col-12 col-md-6">
-                        <label for="status" class="form-label fw-semibold">Status</label>
+                        <label for="status" class="form-label fw-semibold">Status <span class="text-danger">*</span></label>
                         <div class="input-group">
                             <span class="input-group-text bg-white">
                                 <i class="bi bi-toggle-on"></i>
                             </span>
-                            <select class="form-select @error('status') is-invalid @enderror" id="status" name="status">
+                            <select class="form-select @error('status') is-invalid @enderror" id="status" name="status" aria-describedby="statusError" required>
                                 <option value="Active" @selected(old('status', $customer->status) === 'Active')>Active</option>
                                 <option value="Inactive" @selected(old('status', $customer->status) === 'Inactive')>Inactive</option>
                             </select>
                         </div>
                         @error('status')
-                            <div class="text-danger small mt-1">{{ $message }}</div>
+                            <div class="invalid-feedback d-block" id="statusError">{{ $message }}</div>
                         @enderror
                     </div>
 
@@ -123,10 +131,11 @@
                                 name="address"
                                 rows="4"
                                 placeholder="Enter customer address"
+                                aria-describedby="addressError"
                             >{{ old('address', $customer->address) }}</textarea>
                         </div>
                         @error('address')
-                            <div class="text-danger small mt-1">{{ $message }}</div>
+                            <div class="invalid-feedback d-block" id="addressError">{{ $message }}</div>
                         @enderror
                     </div>
                 </div>
@@ -136,7 +145,7 @@
                         <i class="bi bi-x-circle me-1"></i>
                         Cancel
                     </a>
-                    <button type="submit" class="btn btn-primary">
+                    <button type="submit" class="btn btn-primary" data-loading-text="Updating...">
                         <i class="bi bi-check-circle me-1"></i>
                         Update Customer
                     </button>

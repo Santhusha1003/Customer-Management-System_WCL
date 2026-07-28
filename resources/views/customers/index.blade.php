@@ -15,15 +15,7 @@
         </a>
     </div>
 
-    @if (session('success'))
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-            <i class="bi bi-check-circle me-1"></i>
-            {{ session('success') }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-    @endif
-
-    <div class="card border-0 shadow-sm">
+    <div class="card border-0 shadow-soft">
         <div class="card-body p-4">
             <form action="{{ route('customers.index') }}" method="GET" class="row g-3 align-items-end mb-4">
                 <div class="col-12 col-lg-6">
@@ -45,10 +37,10 @@
 
                 <div class="col-12 col-md-6 col-lg-3">
                     <label for="statusFilter" class="form-label fw-semibold">Status</label>
-                    <select class="form-select" id="statusFilter">
-                        <option selected>All</option>
-                        <option>Active</option>
-                        <option>Inactive</option>
+                    <select class="form-select" id="statusFilter" name="status">
+                        <option value="All" @selected($status === 'All')>All</option>
+                        <option value="Active" @selected($status === 'Active')>Active</option>
+                        <option value="Inactive" @selected($status === 'Inactive')>Inactive</option>
                     </select>
                 </div>
 
@@ -61,12 +53,24 @@
             </form>
 
             @if ($customers->isEmpty())
-                <div class="alert alert-info mb-0" role="alert">
-                    {{ $search ? 'No matching customers found.' : 'No customers found.' }}
+                <div class="text-center py-5">
+                    <div class="empty-state-icon mb-3">
+                        <i class="bi bi-search"></i>
+                    </div>
+                    <h2 class="h5 fw-bold mb-2">{{ $search || $status !== 'All' ? 'No matching customers found.' : 'No customers found' }}</h2>
+                    <p class="text-muted mb-4">
+                        {{ $search || $status !== 'All' ? 'Try a different keyword or status filter.' : 'Start by adding your first customer profile.' }}
+                    </p>
+                    @unless ($search || $status !== 'All')
+                        <a href="{{ route('customers.create') }}" class="btn btn-primary">
+                            <i class="bi bi-person-plus me-1"></i>
+                            Add Customer
+                        </a>
+                    @endunless
                 </div>
             @else
                 <div class="table-responsive">
-                    <table class="table table-hover align-middle mb-0">
+                    <table class="table table-hover table-striped align-middle mb-0">
                         <thead class="table-light">
                             <tr>
                                 <th scope="col">ID</th>
@@ -99,13 +103,16 @@
                                             <a href="{{ route('customers.edit', $customer->id) }}" class="btn btn-sm btn-outline-secondary" aria-label="Edit customer">
                                                 <i class="bi bi-pencil"></i>
                                             </a>
-                                            <form action="{{ route('customers.destroy', $customer->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this customer?');">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="btn btn-sm btn-outline-danger" aria-label="Delete customer">
-                                                    <i class="bi bi-trash"></i>
-                                                </button>
-                                            </form>
+                                            <button
+                                                type="button"
+                                                class="btn btn-sm btn-outline-danger"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#deleteCustomerModal"
+                                                data-delete-url="{{ route('customers.destroy', $customer->id) }}"
+                                                aria-label="Delete customer"
+                                            >
+                                                <i class="bi bi-trash"></i>
+                                            </button>
                                         </div>
                                     </td>
                                 </tr>
@@ -124,4 +131,50 @@
             @endif
         </div>
     </div>
+
+    <div class="modal fade" id="deleteCustomerModal" tabindex="-1" aria-labelledby="deleteCustomerModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow-soft">
+                <div class="modal-header">
+                    <h2 class="modal-title h5 fw-bold" id="deleteCustomerModalLabel">
+                        <i class="bi bi-trash text-danger me-2"></i>
+                        Delete Customer
+                    </h2>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close delete confirmation"></button>
+                </div>
+                <div class="modal-body">
+                    Are you sure you want to delete this customer?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                        <i class="bi bi-x-circle me-1"></i>
+                        Cancel
+                    </button>
+                    <form id="deleteCustomerForm" method="POST" data-disable-on-submit="true">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="btn btn-danger" data-loading-text="Deleting...">
+                            <i class="bi bi-trash me-1"></i>
+                            Delete
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const deleteCustomerModal = document.getElementById('deleteCustomerModal');
+
+        if (deleteCustomerModal) {
+            deleteCustomerModal.addEventListener('show.bs.modal', (event) => {
+                const button = event.relatedTarget;
+                const form = document.getElementById('deleteCustomerForm');
+
+                if (button && form) {
+                    form.action = button.getAttribute('data-delete-url');
+                }
+            });
+        }
+    </script>
 @endsection
