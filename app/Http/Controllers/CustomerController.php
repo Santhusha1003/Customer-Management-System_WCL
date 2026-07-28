@@ -59,7 +59,9 @@ class CustomerController extends Controller
      */
     public function edit(string $id)
     {
-        return view('customers.edit');
+        $customer = Customer::findOrFail($id);
+
+        return view('customers.edit', compact('customer'));
     }
 
     /**
@@ -67,7 +69,22 @@ class CustomerController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        // Update logic will be implemented later.
+        $customer = Customer::findOrFail($id);
+
+        $validated = $request->validate([
+            'first_name' => 'required|string|max:100',
+            'last_name' => 'required|string|max:100',
+            'email' => 'required|email|unique:customers,email,' . $customer->id,
+            'phone' => 'required|max:20',
+            'address' => 'nullable',
+            'status' => 'required|in:Active,Inactive',
+        ]);
+
+        $customer->update($validated);
+
+        return redirect()
+            ->route('customers.index')
+            ->with('success', 'Customer updated successfully.');
     }
 
     /**
@@ -75,6 +92,12 @@ class CustomerController extends Controller
      */
     public function destroy(string $id)
     {
-        // Delete logic will be implemented later.
+        $customer = Customer::findOrFail($id);
+
+        $customer->delete();
+
+        return redirect()
+            ->route('customers.index')
+            ->with('success', 'Customer deleted successfully.');
     }
 }
