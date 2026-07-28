@@ -285,16 +285,25 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         document.querySelectorAll('form[data-disable-on-submit="true"]').forEach((form) => {
-            form.addEventListener('submit', () => {
+            form.addEventListener('submit', (event) => {
+                if (form.dataset.submitting === 'true') {
+                    event.preventDefault();
+                    return;
+                }
+
                 const button = form.querySelector('[data-loading-text]');
 
                 if (!button) {
                     return;
                 }
 
+                form.dataset.submitting = 'true';
                 button.disabled = true;
                 button.dataset.originalText = button.innerHTML;
-                button.innerHTML = button.dataset.loadingText;
+                button.innerHTML = `
+                    <span class="spinner-border spinner-border-sm me-1" aria-hidden="true"></span>
+                    <span>${button.dataset.loadingText}</span>
+                `;
             });
         });
     </script>

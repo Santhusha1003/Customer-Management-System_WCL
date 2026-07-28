@@ -182,7 +182,17 @@
             });
 
             confirmDeleteCustomerButton?.addEventListener('click', () => {
-                selectedDeleteForm?.submit();
+                if (!selectedDeleteForm || confirmDeleteCustomerButton.disabled) {
+                    return;
+                }
+
+                confirmDeleteCustomerButton.disabled = true;
+                confirmDeleteCustomerButton.innerHTML = `
+                    <span class="spinner-border spinner-border-sm me-1" aria-hidden="true"></span>
+                    <span>${confirmDeleteCustomerButton.dataset.loadingText}</span>
+                `;
+
+                selectedDeleteForm.submit();
             });
         }
     </script>
