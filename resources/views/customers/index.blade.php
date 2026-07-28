@@ -103,16 +103,20 @@
                                             <a href="{{ route('customers.edit', $customer->id) }}" class="btn btn-sm btn-outline-secondary" aria-label="Edit customer">
                                                 <i class="bi bi-pencil"></i>
                                             </a>
-                                            <button
-                                                type="button"
-                                                class="btn btn-sm btn-outline-danger"
-                                                data-bs-toggle="modal"
-                                                data-bs-target="#deleteCustomerModal"
-                                                data-delete-url="{{ route('customers.destroy', $customer->id) }}"
-                                                aria-label="Delete customer"
-                                            >
-                                                <i class="bi bi-trash"></i>
-                                            </button>
+                                            <form id="deleteCustomerForm{{ $customer->id }}" action="{{ route('customers.destroy', $customer->id) }}" method="POST">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button
+                                                    type="button"
+                                                    class="btn btn-sm btn-outline-danger"
+                                                    data-bs-toggle="modal"
+                                                    data-bs-target="#deleteCustomerModal"
+                                                    data-delete-form="deleteCustomerForm{{ $customer->id }}"
+                                                    aria-label="Delete customer"
+                                                >
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                            </form>
                                         </div>
                                     </td>
                                 </tr>
@@ -143,21 +147,18 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close delete confirmation"></button>
                 </div>
                 <div class="modal-body">
-                    Are you sure you want to delete this customer?
+                    <p class="mb-1">Are you sure you want to delete this customer?</p>
+                    <p class="text-muted mb-0">This action cannot be undone.</p>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                         <i class="bi bi-x-circle me-1"></i>
                         Cancel
                     </button>
-                    <form id="deleteCustomerForm" method="POST" data-disable-on-submit="true">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="btn btn-danger" data-loading-text="Deleting...">
-                            <i class="bi bi-trash me-1"></i>
-                            Delete
-                        </button>
-                    </form>
+                    <button type="button" class="btn btn-danger" id="confirmDeleteCustomerButton" data-loading-text="Deleting...">
+                        <i class="bi bi-trash me-1"></i>
+                        Delete
+                    </button>
                 </div>
             </div>
         </div>
@@ -165,15 +166,23 @@
 
     <script>
         const deleteCustomerModal = document.getElementById('deleteCustomerModal');
+        const confirmDeleteCustomerButton = document.getElementById('confirmDeleteCustomerButton');
+        let selectedDeleteForm = null;
 
         if (deleteCustomerModal) {
             deleteCustomerModal.addEventListener('show.bs.modal', (event) => {
                 const button = event.relatedTarget;
-                const form = document.getElementById('deleteCustomerForm');
+                const formId = button?.getAttribute('data-delete-form');
 
-                if (button && form) {
-                    form.action = button.getAttribute('data-delete-url');
-                }
+                selectedDeleteForm = formId ? document.getElementById(formId) : null;
+            });
+
+            deleteCustomerModal.addEventListener('hidden.bs.modal', () => {
+                selectedDeleteForm = null;
+            });
+
+            confirmDeleteCustomerButton?.addEventListener('click', () => {
+                selectedDeleteForm?.submit();
             });
         }
     </script>
