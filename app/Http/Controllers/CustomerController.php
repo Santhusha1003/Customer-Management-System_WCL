@@ -10,11 +10,24 @@ class CustomerController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $customers = Customer::latest()->get();
+        $search = $request->input('search');
 
-        return view('customers.index', compact('customers'));
+        $customers = Customer::query()
+            ->when($search, function ($query, $search) {
+                $query->where(function ($query) use ($search) {
+                    $query->where('first_name', 'like', "%{$search}%")
+                        ->orWhere('last_name', 'like', "%{$search}%")
+                        ->orWhere('email', 'like', "%{$search}%")
+                        ->orWhere('phone', 'like', "%{$search}%");
+                });
+            })
+            ->latest()
+            ->paginate(10)
+            ->withQueryString();
+
+        return view('customers.index', compact('customers', 'search'));
     }
 
     /**
@@ -51,7 +64,9 @@ class CustomerController extends Controller
      */
     public function show(string $id)
     {
-        // Customer details will be implemented later.
+        $customer = Customer::findOrFail($id);
+
+        return view('customers.show', compact('customer'));
     }
 
     /**

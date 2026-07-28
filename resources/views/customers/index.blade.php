@@ -25,14 +25,21 @@
 
     <div class="card border-0 shadow-sm">
         <div class="card-body p-4">
-            <div class="row g-3 align-items-end mb-4">
+            <form action="{{ route('customers.index') }}" method="GET" class="row g-3 align-items-end mb-4">
                 <div class="col-12 col-lg-6">
                     <label for="customerSearch" class="form-label fw-semibold">Search Customers</label>
                     <div class="input-group">
                         <span class="input-group-text bg-white">
                             <i class="bi bi-search"></i>
                         </span>
-                        <input type="search" class="form-control" id="customerSearch" placeholder="Search by name, email, or phone">
+                        <input
+                            type="search"
+                            class="form-control"
+                            id="customerSearch"
+                            name="search"
+                            value="{{ $search }}"
+                            placeholder="Search by name, email, or phone"
+                        >
                     </div>
                 </div>
 
@@ -46,16 +53,16 @@
                 </div>
 
                 <div class="col-12 col-md-6 col-lg-3">
-                    <button type="button" class="btn btn-primary w-100">
+                    <button type="submit" class="btn btn-primary w-100">
                         <i class="bi bi-search me-1"></i>
                         Search
                     </button>
                 </div>
-            </div>
+            </form>
 
             @if ($customers->isEmpty())
                 <div class="alert alert-info mb-0" role="alert">
-                    No customers found.
+                    {{ $search ? 'No matching customers found.' : 'No customers found.' }}
                 </div>
             @else
                 <div class="table-responsive">
@@ -86,9 +93,9 @@
                                     </td>
                                     <td>
                                         <div class="d-flex justify-content-end gap-2">
-                                            <button type="button" class="btn btn-sm btn-outline-primary" aria-label="View customer">
+                                            <a href="{{ route('customers.show', $customer->id) }}" class="btn btn-sm btn-outline-primary" aria-label="View customer">
                                                 <i class="bi bi-eye"></i>
-                                            </button>
+                                            </a>
                                             <a href="{{ route('customers.edit', $customer->id) }}" class="btn btn-sm btn-outline-secondary" aria-label="Edit customer">
                                                 <i class="bi bi-pencil"></i>
                                             </a>
@@ -105,6 +112,14 @@
                             @endforeach
                         </tbody>
                     </table>
+                </div>
+
+                <div class="d-flex flex-column align-items-center gap-3 pt-4">
+                    <p class="text-muted small mb-0">
+                        Showing {{ $customers->firstItem() ?? 0 }} to {{ $customers->lastItem() ?? 0 }} of {{ $customers->total() }} customers
+                    </p>
+
+                    {{ $customers->links('pagination::bootstrap-5') }}
                 </div>
             @endif
         </div>
