@@ -171,6 +171,42 @@
             font-weight: 700;
         }
 
+        .avatar-button {
+            border: 0;
+            border-radius: 50%;
+            padding: 0;
+            background: transparent;
+        }
+
+        .avatar-button::after {
+            display: none;
+        }
+
+        .notification-dropdown {
+            width: min(360px, calc(100vw - 2rem));
+        }
+
+        .notification-icon {
+            width: 40px;
+            height: 40px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            flex: 0 0 40px;
+            border-radius: 10px;
+            background-color: rgba(13, 110, 253, .1);
+            color: var(--cms-primary);
+            font-size: 1.1rem;
+        }
+
+        .notification-item.unread {
+            background-color: rgba(13, 110, 253, .045);
+        }
+
+        .notification-title.unread {
+            font-weight: 700;
+        }
+
         @media (min-width: 992px) {
             .desktop-sidebar {
                 display: block;
@@ -194,14 +230,118 @@
             </a>
 
             <div class="ms-auto d-flex align-items-center gap-3">
-                <button class="btn btn-light position-relative" type="button" aria-label="Notifications">
-                    <i class="bi bi-bell"></i>
-                    <span class="position-absolute top-0 start-100 translate-middle p-1 bg-primary border border-light rounded-circle">
-                        <span class="visually-hidden">New notifications</span>
-                    </span>
-                </button>
+                <div class="dropdown">
+                    <button
+                        class="btn btn-light position-relative"
+                        type="button"
+                        id="notificationDropdown"
+                        data-bs-toggle="dropdown"
+                        data-bs-auto-close="outside"
+                        aria-expanded="false"
+                        aria-label="Notifications"
+                    >
+                        <i class="bi bi-bell"></i>
+                        @if ($unreadNotificationsCount > 0)
+                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-primary" id="notificationUnreadBadge">
+                                {{ $unreadNotificationsCount }}
+                                <span class="visually-hidden">unread notifications</span>
+                            </span>
+                        @endif
+                    </button>
 
-                <div class="avatar-placeholder" aria-label="User avatar">U</div>
+                    <div class="dropdown-menu dropdown-menu-end notification-dropdown border-0 shadow-soft p-0" aria-labelledby="notificationDropdown">
+                        <div class="d-flex align-items-center justify-content-between px-3 py-3 border-bottom">
+                            <h2 class="h6 fw-bold mb-0">Notifications</h2>
+                            @if ($unreadNotificationsCount > 0)
+                                <span class="badge text-bg-primary" id="notificationUnreadText">{{ $unreadNotificationsCount }} unread</span>
+                            @endif
+                        </div>
+
+                        @if ($recentNotifications->isEmpty())
+                            <div class="text-center text-muted py-4 px-3">
+                                <i class="bi bi-bell d-block fs-3 mb-2"></i>
+                                No notifications available.
+                            </div>
+                        @else
+                            <div class="list-group list-group-flush">
+                                @foreach ($recentNotifications as $notification)
+                                    <div class="list-group-item notification-item {{ $notification['unread'] ? 'unread' : '' }}">
+                                        <div class="d-flex gap-3">
+                                            <div class="notification-icon text-{{ $notification['type'] }}">
+                                                <i class="bi bi-{{ $notification['icon'] }}"></i>
+                                            </div>
+                                            <div class="flex-grow-1">
+                                                <div class="d-flex justify-content-between gap-2">
+                                                    <h3 class="h6 mb-1 notification-title {{ $notification['unread'] ? 'unread' : '' }}">{{ $notification['title'] }}</h3>
+                                                    @if ($notification['unread'])
+                                                        <span class="badge text-bg-primary align-self-start">New</span>
+                                                    @endif
+                                                </div>
+                                                <p class="small text-muted mb-1">{{ $notification['message'] }}</p>
+                                                <div class="small text-muted">
+                                                    {{ $notification['time'] }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>
+                        @endif
+
+                        <div class="p-3 border-top">
+                            <a href="{{ route('notifications.index') }}" class="btn btn-primary w-100">
+                                <i class="bi bi-list-ul me-1"></i>
+                                View All Notifications
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="dropdown">
+                    <button
+                        class="avatar-button dropdown-toggle"
+                        type="button"
+                        id="profileDropdown"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false"
+                        aria-label="Open profile menu"
+                    >
+                        <span class="avatar-placeholder">U</span>
+                    </button>
+
+                    <ul class="dropdown-menu dropdown-menu-end border-0 shadow-soft" aria-labelledby="profileDropdown">
+                        <li>
+                            <a class="dropdown-item d-flex align-items-center gap-2" href="{{ route('profile') }}">
+                                <i class="bi bi-person-circle"></i>
+                                <span>My Profile</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item d-flex align-items-center gap-2" href="{{ route('settings') }}">
+                                <i class="bi bi-gear"></i>
+                                <span>Settings</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item d-flex align-items-center gap-2" href="{{ route('about') }}">
+                                <i class="bi bi-info-circle"></i>
+                                <span>About System</span>
+                            </a>
+                        </li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li>
+                            <button
+                                class="dropdown-item d-flex align-items-center gap-2 text-danger"
+                                type="button"
+                                data-bs-toggle="modal"
+                                data-bs-target="#logoutDemoModal"
+                            >
+                                <i class="bi bi-box-arrow-right"></i>
+                                <span>Logout (Demo)</span>
+                            </button>
+                        </li>
+                    </ul>
+                </div>
             </div>
         </div>
     </nav>
@@ -220,11 +360,6 @@
                     <a href="{{ route('customers.index') }}" class="sidebar-link {{ request()->routeIs('customers.index') ? 'active' : '' }}">
                         <i class="bi bi-people"></i>
                         <span>Customers</span>
-                    </a>
-
-                    <a href="{{ route('customers.create') }}" class="sidebar-link {{ request()->routeIs('customers.create') ? 'active' : '' }}">
-                        <i class="bi bi-person-plus"></i>
-                        <span>Add Customer</span>
                     </a>
                 </nav>
             </div>
@@ -248,11 +383,6 @@
                         <a href="{{ route('customers.index') }}" class="sidebar-link {{ request()->routeIs('customers.index') ? 'active' : '' }}">
                             <i class="bi bi-people"></i>
                             <span>Customers</span>
-                        </a>
-
-                        <a href="{{ route('customers.create') }}" class="sidebar-link {{ request()->routeIs('customers.create') ? 'active' : '' }}">
-                            <i class="bi bi-person-plus"></i>
-                            <span>Add Customer</span>
                         </a>
                     </nav>
                 </div>
@@ -282,6 +412,23 @@
         </div>
     </footer>
 
+    <div class="modal fade" id="logoutDemoModal" tabindex="-1" aria-labelledby="logoutDemoModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow-soft">
+                <div class="modal-header">
+                    <h2 class="modal-title h5 fw-bold" id="logoutDemoModalLabel">Demo Project</h2>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close logout message"></button>
+                </div>
+                <div class="modal-body">
+                    Authentication is not implemented in this project.
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         document.querySelectorAll('form[data-disable-on-submit="true"]').forEach((form) => {
@@ -306,6 +453,7 @@
                 `;
             });
         });
+
     </script>
 </body>
 </html>
