@@ -1,6 +1,37 @@
 (function () {
+    const storageKey = 'cmsThemePreference';
     const lightTheme = 'light';
     const darkTheme = 'dark';
+
+    function isPageRefresh() {
+        const navigationEntry = performance.getEntriesByType('navigation')[0];
+
+        return navigationEntry?.type === 'reload';
+    }
+
+    function getStoredTheme() {
+        try {
+            return sessionStorage.getItem(storageKey);
+        } catch (error) {
+            return null;
+        }
+    }
+
+    function storeTheme(theme) {
+        try {
+            sessionStorage.setItem(storageKey, theme);
+        } catch (error) {
+            // Session storage can be unavailable in private browsing modes.
+        }
+    }
+
+    function clearStoredTheme() {
+        try {
+            sessionStorage.removeItem(storageKey);
+        } catch (error) {
+            // Session storage can be unavailable in private browsing modes.
+        }
+    }
 
     function applyTheme(theme) {
         const isDark = theme === darkTheme;
@@ -27,7 +58,11 @@
         icon.className = isDark ? 'bi bi-sun-fill' : 'bi bi-moon-fill';
     }
 
-    applyTheme(lightTheme);
+    if (isPageRefresh()) {
+        clearStoredTheme();
+    }
+
+    applyTheme(getStoredTheme() || lightTheme);
 
     document.addEventListener('DOMContentLoaded', () => {
         updateToggle(document.documentElement.getAttribute('data-theme') === darkTheme);
@@ -36,6 +71,7 @@
             const nextTheme = document.documentElement.getAttribute('data-theme') === darkTheme ? 'light' : darkTheme;
 
             applyTheme(nextTheme);
+            storeTheme(nextTheme);
         });
     });
 })();
