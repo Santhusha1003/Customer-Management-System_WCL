@@ -7,6 +7,8 @@
 
     <title>@yield('title', 'Customer Management System')</title>
 
+    <script src="{{ asset('js/dark-mode.js') }}"></script>
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
     <link href="{{ asset('css/splash-screen.css') }}" rel="stylesheet">
@@ -215,6 +217,7 @@
             }
         }
     </style>
+    <link href="{{ asset('css/dark-mode.css') }}" rel="stylesheet">
 </head>
 <body>
     @if (request()->routeIs('dashboard'))
@@ -301,6 +304,16 @@
                         </div>
                     </div>
                 </div>
+
+                <button
+                    class="btn btn-light cms-theme-toggle"
+                    type="button"
+                    id="themeToggle"
+                    aria-label="Enable dark mode"
+                    aria-pressed="false"
+                >
+                    <i class="bi bi-moon-fill" id="themeToggleIcon" aria-hidden="true"></i>
+                </button>
 
                 <div class="dropdown">
                     <button
