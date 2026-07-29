@@ -6,6 +6,7 @@ A simple and responsive **Customer Management System** built with **Laravel 13**
 
 ## ✨ Features
 
+- Professional splash screen with smooth loading animation
 - Dashboard with customer statistics
 - Create, Read, Update and Delete (CRUD) operations
 - Search customers
