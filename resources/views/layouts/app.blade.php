@@ -9,6 +9,7 @@
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="{{ asset('css/splash-screen.css') }}" rel="stylesheet">
 
     <style>
         :root {
@@ -216,6 +217,10 @@
     </style>
 </head>
 <body>
+    @if (request()->routeIs('dashboard'))
+        @include('partials.splash-screen')
+    @endif
+
     <nav class="navbar navbar-expand-lg bg-white border-bottom sticky-top">
         <div class="container-fluid px-3 px-lg-4">
             <button class="btn btn-outline-primary d-lg-none me-2" type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileSidebar" aria-controls="mobileSidebar" aria-label="Open menu">
@@ -430,6 +435,7 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ asset('js/splash-screen.js') }}"></script>
     <script>
         document.querySelectorAll('form[data-disable-on-submit="true"]').forEach((form) => {
             form.addEventListener('submit', (event) => {
