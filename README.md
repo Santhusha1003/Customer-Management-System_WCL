@@ -17,6 +17,7 @@ A simple and responsive **Customer Management System** built with **Laravel 13**
 - Responsive Bootstrap 5 interface
 - Notification system
 - Profile, Settings and About pages
+- Light & Dark Theme Toggle (Light Theme by Default)
 
 ---
 
